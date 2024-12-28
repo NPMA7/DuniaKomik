@@ -19,3 +19,14 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.form-animate {
+  transform: translateX(100%); /* Elemen keluar dari layar */
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.form-animate-enter {
+  transform: translateX(0); /* Elemen masuk ke layar */
+  opacity: 1;
+}
