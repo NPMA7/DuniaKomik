@@ -1,0 +1,20 @@
+hal yang harus dikerjakan
+- [x] buatkan halaman home
+- [x] buatkan halaman komik
+- [x] buatkan halaman chapter
+- [x] buatkan halaman admin
+- [x] buatkan halaman update-chapters
+- [x] buatkan halaman update-chapters/[id]
+- [x] buatkan halaman update-chapters/[id]
+- [x] buatkan halaman update-chapters/[id]/chapter/[chapterNumber]
+- [x] buatkan halaman update-chapters/[id]/chapter/[chapterNumber]/page
+- [x] buatkan halaman update-chapters/[id]/chapter/[chapterNumber]/page/[pageNumber]
+- [x] buatkan halaman update-chapters/[id]/chapter/[chapterNumber]/page/[pageNumber]/page
+middleware
+- [x] buatkan middleware untuk halaman admin
+- [x] buatkan middleware untuk halaman update-chapters
+- [x] buatkan middleware untuk halaman update-chapters/[id]
+- [x] buatkan middleware untuk halaman update-chapters/[id]/chapter/[chapterNumber]
+- [x] buatkan middleware untuk halaman update-chapters/[id]/chapter/[chapterNumber]/page
+- [x] buatkan middleware untuk halaman update-chapters/[id]/chapter/[chapterNumber]/page/[pageNumber]
+- [x] buatkan middleware untuk halaman update-chapters/[id]/chapter/[chapterNumber]/page/[pageNumber]/page

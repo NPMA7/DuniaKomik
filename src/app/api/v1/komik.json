@@ -1,0 +1,205 @@
+[
+  {
+    "id": 1,
+    "title": "Mercenary Enrollment",
+    "slug": "mercenary-enrollment",
+    "description": "입학용병",
+    "image": "https://d40b35e2.delivery.rocketcdn.me/wp-content/uploads/2021/03/23-587365-WMDAnwJR.jpg",
+    "genre": [
+      "Action",
+      "Drama",
+      "Romance",
+      "School Life",
+      "Sci-fi"
+    ],
+    "synopsis": "Yu Ijin adalah satu-satunya yang selamat dari kecelakaan pesawat saat dia masih kecil. Setelah menjadi tentara bayaran untuk bertahan hidup selama 10 tahun, ia kembali ke keluarganya di kampung halamannya.",
+    "status": "Ongoing",
+    "type": "Manhwa",
+    "released": "2020",
+    "author": "YC",
+    "posted_on": "2021-03-07",
+    "updated_on": "2024-12-28",
+    "chapters": [
+      {
+        "chapter_number": 1,
+        "title": "Ch.1",
+        "posted_on": "2024-12-29T02:04",
+        "file": "https://drive.google.com/drive/folders/1HL-Jwj65lgz-5pOkdzRLTCaHsOcMWGGM"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Github Komik",
+    "slug": "github-komik",
+    "description": "test path online url",
+    "image": "/images/komik3.png",
+    "genre": [
+      "Technology",
+      "Adventure"
+    ],
+    "synopsis": "This is a test synopsis for Github.",
+    "status": "Completed",
+    "type": "Webcomic",
+    "released": "2020",
+    "author": "Author Name",
+    "posted_on": "2020-01-01",
+    "updated_on": "2020-06-01",
+    "chapters": [
+      {
+        "chapter_number": 1,
+        "title": "Ch.1",
+        "posted_on": "2024-12-28T16:36",
+        "file": "files/solo-farming-in-the-tower-chapter-90"
+      },
+      {
+        "chapter_number": 2,
+        "title": "Ch.2",
+        "posted_on": "2024-12-28T16:37",
+        "file": "files/komik1.pdf"
+      },
+      {
+        "chapter_number": 3,
+        "title": "Ch.3",
+        "posted_on": "2024-12-28T16:37",
+        "file": "files/komik3.pdf"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Reincarnation of the Veteran Soldier",
+    "slug": "reincarnation-of-the-veteran-soldier",
+    "description": "dfa",
+    "image": "/images/komik3.png",
+    "genre": [
+      "Action"
+    ],
+    "synopsis": "sad",
+    "status": "Ongoing",
+    "type": "Manhwa",
+    "released": "2024",
+    "author": "sad",
+    "posted_on": "2024-12-28",
+    "updated_on": "2024-12-28",
+    "chapters": [
+      {
+        "chapter_number": 1,
+        "title": "Ch.1",
+        "posted_on": "2024-12-26T20:27",
+        "file": "files/solo-farming-in-the-tower-chapter-90"
+      },
+      {
+        "chapter_number": 2,
+        "title": "Ch.2",
+        "posted_on": "2024-12-26T20:27",
+        "file": "files/solo-farming-in-the-tower-chapter-90"
+      },
+      {
+        "chapter_number": 3,
+        "title": "Ch.3",
+        "posted_on": "2024-12-27T20:27",
+        "file": "files/solo-farming-in-the-tower-chapter-90"
+      },
+      {
+        "chapter_number": 4,
+        "title": "Ch.4",
+        "posted_on": "2024-12-28T20:27",
+        "file": "files/solo-farming-in-the-tower-chapter-90"
+      },
+      {
+        "chapter_number": 5,
+        "title": "Ch.5",
+        "posted_on": "2024-12-28T20:34",
+        "file": "files/solo-farming-in-the-tower-chapter-90"
+      }
+    ]
+  },
+  {
+    "title": "Solo Necttromarcer",
+    "description": "anak yt",
+    "image": "/images/komik2.png",
+    "genre": [
+      "Action"
+    ],
+    "synopsis": "fa",
+    "status": "Hiatus",
+    "type": "Manhwa",
+    "released": "2332",
+    "author": "123",
+    "posted_on": "2024-12-28",
+    "updated_on": "2024-12-28",
+    "slug": "solo-necttromarcer",
+    "id": 4,
+    "chapters": [
+      {
+        "chapter_number": 1,
+        "title": "Ch.1",
+        "posted_on": "2024-12-28T18:13",
+        "file": "files/solo-farming-in-the-tower-chapter-90"
+      }
+    ]
+  },
+  {
+    "title": "Magic Emperor",
+    "description": "Housekeeper is the Magic Emperor, 魔皇大管家",
+    "image": "/images/komik1.png",
+    "genre": [
+      "",
+      "Action",
+      "Adventure",
+      "Fantasy",
+      "Shounen",
+      "Supernatural"
+    ],
+    "synopsis": "“Zhuo Yifan adalah seorang kaisar sihir atau bisa di panggil kaisar iblis, karena dia mempunyai buku kaisar kuno yang di sebut buku sembilan rahasia dia menjadi sasaran semua ahli beradiri bahkan dia di khianati dan di bunuh oleh muridnya. Kemudian jiwanya masuk dan hidup kembali dalam seorang anak pelayan keluarga bernama Zhuo Fan.Karena suatu sihir iblis mengekangnya, dia harus menyatukan ingatan anak itu dan tidak bisa mengabaikan keluarga dan nona yang dia layaninya. Bagaimana kehidupan nya membangun kembali keluarganya dan kembali menjadi yang terkuat didaratan benua…”",
+    "status": "Ongoing",
+    "type": "Manhua",
+    "released": "2019",
+    "author": "Wuer Manhua Ye Xiao",
+    "posted_on": "2021-03-03",
+    "updated_on": "2024-12-28",
+    "slug": "magic-emperor",
+    "id": 5,
+    "chapters": [
+      {
+        "chapter_number": 1,
+        "title": "Ch.1",
+        "posted_on": "2024-12-28T18:51",
+        "file": "files/solo-farming-in-the-tower-chapter-90"
+      }
+    ]
+  },
+  {
+    "title": "Asumasou",
+    "description": "fkwke",
+    "image": "/images/komik1.png",
+    "genre": [
+      "",
+      "Adult"
+    ],
+    "synopsis": "asdf",
+    "status": "Ongoing",
+    "type": "Manga",
+    "released": "2002",
+    "author": "rs",
+    "posted_on": "2024-12-28",
+    "updated_on": "2024-12-28",
+    "slug": "asumasou",
+    "id": 6,
+    "chapters": [
+      {
+        "chapter_number": 1,
+        "title": "Ch.1",
+        "posted_on": "2024-12-28T23:00",
+        "file": "files/solo-farming-in-the-tower-chapter-90"
+      },
+      {
+        "chapter_number": 2,
+        "title": "Ch.2",
+        "posted_on": "2024-12-28T23:02",
+        "file": "files/solo-farming-in-the-tower-chapter-90"
+      }
+    ]
+  }
+]

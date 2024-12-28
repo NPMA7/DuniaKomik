@@ -30,3 +30,35 @@ body {
   transform: translateX(0); /* Elemen masuk ke layar */
   opacity: 1;
 }
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Mengisi tinggi viewport */
+}
+
+.loader {
+  border: 8px solid #f3f3f3; /* Warna latar belakang */
+  border-top: 8px solid #3498db; /* Warna bagian atas */
+  border-radius: 50%;
+  width: 60px; /* Ukuran loader */
+  height: 60px; /* Ukuran loader */
+  animation: spin 1s linear infinite; /* Animasi berputar */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px; /* Tinggi bar */
+  background-color: #3498db; /* Warna bar */
+  width: 0; /* Lebar awal */
+  transition: width 0.5s ease; /* Transisi lebar */
+  z-index: 9999; /* Pastikan di atas elemen lain */
+}

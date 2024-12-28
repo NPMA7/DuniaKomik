@@ -40,6 +40,17 @@ const Footer = () => {
             ▲
           </button>
         </div>
+
+        {/* Scroll to Bottom Button */}
+        <div className="fixed bottom-4 right-16">
+          <button
+            onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })}
+            className="bg-[#2563EB] text-white p-3 rounded-full shadow-lg hover:bg-red-700"
+            aria-label="Scroll to bottom"
+          >
+            ▼
+          </button>
+        </div>
       </footer>
     );
   }

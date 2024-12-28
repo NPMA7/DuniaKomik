@@ -2,350 +2,268 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowLeft,
+  faBook,
+  faCode,
+  faSignOutAlt,
+} from "@fortawesome/free-solid-svg-icons";
 
-const AdminPage = () => {
+export default function AdminPage() {
   const router = useRouter();
   const [komikList, setKomikList] = useState([]);
-  const [selectedKomik, setSelectedKomik] = useState(null);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState("");
-  const [genre, setGenre] = useState("");
-  const [synopsis, setSynopsis] = useState("");
-  const [status, setStatus] = useState("");
-  const [type, setType] = useState("");
-  const [released, setReleased] = useState("");
-  const [author, setAuthor] = useState("");
-  const [postedOn, setPostedOn] = useState("");
-  const [updatedOn, setUpdatedOn] = useState("");
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [formAnimate, setFormAnimate] = useState(false);
-
+  const [totalChapters, setTotalChapters] = useState(0);
+  const [latestKomik, setLatestKomik] = useState(null);
+  const [totalCompleted, setTotalCompleted] = useState(0);
+  const [totalOngoing, setTotalOngoing] = useState(0);
+  const [totalHiatus, setTotalHiatus] = useState(0);
+  const [totalDropped, setTotalDropped] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [isAccessExpired, setIsAccessExpired] = useState(false);
+  const [totalManga, setTotalManga] = useState(0);
+  const [totalManhua, setTotalManhua] = useState(0);
+  const [totalManhwa, setTotalManhwa] = useState(0);
+  const [totalWebcomic, setTotalWebcomic] = useState(0);
 
   useEffect(() => {
-    const fetchKomik = async () => {
-      const response = await fetch("/api/komik");
+    const fetchKomikData = async () => {
+      const response = await fetch("/api/v1/komik");
       const data = await response.json();
       setKomikList(data);
+      if (data.length > 0) {
+        setLatestKomik(data[data.length - 1]);
+        const totalChaptersCount = data.reduce(
+          (acc, komik) => acc + (komik.chapters ? komik.chapters.length : 0),
+          0
+        );
+        setTotalChapters(totalChaptersCount);
+
+        const completedCount = data.filter(
+          (komik) => komik.status === "Completed"
+        ).length;
+        const ongoingCount = data.filter(
+          (komik) => komik.status === "Ongoing"
+        ).length;
+        const hiatusCount = data.filter(
+          (komik) => komik.status === "Hiatus"
+        ).length;
+        const droppedCount = data.filter(
+          (komik) => komik.status === "Dropped"
+        ).length;
+        const mangaCount = data.filter(
+          (komik) => komik.type === "Manga"
+        ).length;
+        const manhuaCount = data.filter(
+          (komik) => komik.type === "Manhua"
+        ).length;
+        const manhwaCount = data.filter(
+          (komik) => komik.type === "Manhwa"
+        ).length;
+        const webcomicCount = data.filter(
+          (komik) => komik.type === "Webcomic"
+        ).length;
+
+        setTotalCompleted(completedCount);
+        setTotalOngoing(ongoingCount);
+        setTotalHiatus(hiatusCount);
+        setTotalDropped(droppedCount);
+        setTotalManga(mangaCount);
+        setTotalManhua(manhuaCount);
+        setTotalManhwa(manhwaCount);
+        setTotalWebcomic(webcomicCount);
+      }
     };
 
-    fetchKomik();
+    fetchKomikData();
   }, []);
 
-  const handleEdit = (komik) => {
-    setSelectedKomik(komik);
-    setTitle(komik.title);
-    setDescription(komik.description);
-    setImage(komik.image);
-    setGenre(komik.genre);
-    setSynopsis(komik.synopsis);
-    setStatus(komik.status);
-    setType(komik.type);
-    setReleased(komik.released);
-    setAuthor(komik.author);
-    setPostedOn(komik.posted_on);
-    setUpdatedOn(komik.updated_on);
-    setShowAddForm(true);
-    setTimeout(() => setFormAnimate(true), 10);
-  };
+  useEffect(() => {
+    // Ambil waktu login dari cookie
+    const loginTime = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("temporary_key_time="))
+      ?.split("=")[1];
 
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    const updatedKomik = {
-      ...selectedKomik,
-      title,
-      description,
-      image,
-      genre,
-      synopsis,
-      status,
-      type,
-      released,
-      author,
-      posted_on: postedOn,
-      updated_on: updatedOn,
-    };
+    if (loginTime) {
+      const now = Date.now();
+      const timeElapsed = now - parseInt(loginTime);
 
-    const response = await fetch("/api/komik", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedKomik),
-    });
+      // Periksa apakah waktu lebih dari 1 menit
+      if (timeElapsed > 60000) {
+        setIsAccessExpired(true);
+        alert("Waktu akses telah habis. Silakan login kembali.");
+      } else {
+        setElapsedTime(timeElapsed);
+        const interval = setInterval(() => {
+          setElapsedTime((prevTime) => prevTime + 1000); // Update setiap detik
+        }, 1000);
 
-    if (response.ok) {
-      const updatedData = await response.json();
-      setKomikList((prev) =>
-        prev.map((komik) => (komik.id === updatedData.id ? updatedData : komik))
-      );
-      resetForm();
+        return () => clearInterval(interval); // Cleanup interval
+      }
+    } else {
+      // Jika tidak ada waktu login, berarti akses unlimited
+      setElapsedTime(0); // Tidak ada waktu akses berlangsung
+      setIsAccessExpired(false); // Pastikan tidak terjadi expired
     }
+  }, []);
+
+  // Menghitung waktu dalam format detik, menit, detik
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60000);
+    const seconds = Math.floor((time % 60000) / 1000);
+    return `${minutes} menit ${seconds} detik`;
   };
 
-  const handleDelete = async (id) => {
-    const response = await fetch("/api/komik", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id }),
-    });
-
-    if (response.ok) {
-      setKomikList((prev) => prev.filter((komik) => komik.id !== id));
-    }
+  // Menghitung waktu akses yang tersisa
+  const calculateRemainingTime = () => {
+    const now = Date.now();
+    const loginTime = parseInt(
+      document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("temporary_key_time="))
+        ?.split("=")[1]
+    );
+    const timeElapsed = now - loginTime;
+    const remainingTime = 60000 - timeElapsed; // 1 menit dalam milidetik
+    return remainingTime;
   };
 
-  const handleAdd = async (e) => {
-    e.preventDefault();
-    const newKomik = {
-      title,
-      description,
-      image,
-      genre,
-      synopsis,
-      status,
-      type,
-      released,
-      author,
-      posted_on: postedOn,
-      updated_on: updatedOn,
-    };
-
-    const response = await fetch("/api/komik", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newKomik),
-    });
-
-    if (response.ok) {
-      const addedKomik = await response.json();
-      setKomikList((prev) => [...prev, addedKomik]);
-      resetForm();
-    }
-  };
-
-  const resetForm = () => {
-    setSelectedKomik(null);
-    setTitle("");
-    setDescription("");
-    setImage("");
-    setGenre("");
-    setSynopsis("");
-    setStatus("");
-    setType("");
-    setReleased("");
-    setAuthor("");
-    setPostedOn("");
-    setUpdatedOn("");
-    handleHideForm();
-  };
-
-  const handleShowForm = () => {
-    setSelectedKomik(null);
-    setTitle("");
-    setDescription("");
-    setImage("");
-    setGenre("");
-    setSynopsis("");
-    setStatus("");
-    setType("");
-    setReleased("");
-    setAuthor("");
-    setPostedOn("");
-    setUpdatedOn("");
-    setShowAddForm(true);
-    setTimeout(() => setFormAnimate(true), 10);
-  };
-
-  const handleHideForm = () => {
-    setFormAnimate(false);
-    setTimeout(() => setShowAddForm(false), 500);
-  };
+  if (isAccessExpired) {
+    return (
+      <div className="text-white">
+        Waktu akses telah habis. Silakan login kembali.
+      </div>
+    );
+  }
 
   return (
-    <div className="container py-10 flex justify-end">
-      <div className="flex-1 pl-52">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Admin - Update Komik</h1>
-          <button
-            onClick={handleShowForm}
-            className="bg-blue-500 text-white py-2 px-4 rounded"
-          >
-            Tambah Komik
-          </button>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {komikList.map((komik) => (
-            <div key={komik.id} className="bg-gray-800 p-4 rounded-lg">
-              <h1 className="font-bold text-lg text-white">id: {komik.id}</h1>
-              <h2 className="text-white">Judul: {komik.title}</h2>
-              <p className="text-white">Deskripsi: {komik.description}</p>
-              <p className="text-white">
-                Path Gambar:{" "}
-                {komik.image.length > 50
-                  ? `${komik.image.substring(0, 50)}...`
-                  : komik.image}
-              </p>
-              <p className="text-white">Genre: {komik.genre}</p>
-              <p className="text-white">Synopsis: {komik.synopsis}</p>
-              <p className="text-white">Status: {komik.status}</p>
-              <p className="text-white">Type: {komik.type}</p>
-              <p className="text-white">Released: {komik.released}</p>
-              <p className="text-white">Author: {komik.author}</p>
-              <p className="text-white">Posted On: {komik.posted_on}</p>
-              <p className="text-white">Updated On: {komik.updated_on}</p>
-
-              <div className="flex gap-4">
-              <button
-                onClick={() => handleEdit(komik)}
-                className="bg-blue-500 text-white py-2 px-4 rounded mt-2"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(komik.id)}
-                className="bg-red-500 text-white py-2 px-4 rounded mt-2"
-              >
-                Hapus
-              </button>
-              <button
-                onClick={() => router.push(`/update-chapters/${komik.id}`)}
-                className="bg-yellow-500 text-white py-2 px-4 rounded mt-2"
-              >
-                Update Chapters
-              </button>
-              </div>
+    <div className="container mx-auto p-8">
+      <h1 className="text-4xl font-bold mb-6 text-center">Dashboard Admin</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-gray-800 p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl font-bold text-white mb-4">Navigasi</h2>
+          <div className="flex flex-col gap-4">
+            <button
+              onClick={() => router.back()}
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center justify-center"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+              Kembali
+            </button>
+            <a
+              href="/admin/update-comics"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center justify-center"
+            >
+              <FontAwesomeIcon icon={faBook} className="mr-2" />
+              Update Komik
+            </a>
+            <a
+              href="https://github.com/username/repo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center justify-center"
+            >
+              <FontAwesomeIcon icon={faCode} className="mr-2" />
+              GitHub Project
+            </a>
+            <div className="text-white">
+              {elapsedTime === 0 ? (
+                <p>Waktu Akses Berlangsung: Tidak Ada</p>
+              ) : (
+                <p>Waktu Akses Berlangsung: {formatTime(elapsedTime)}</p>
+              )}
+              {elapsedTime === 0 ? (
+                <p>Waktu Akses Tersisa: Tanpa Batas</p>
+              ) : (
+                <p>Waktu Akses Tersisa: {formatTime(calculateRemainingTime())}</p>
+              )}
             </div>
-          ))}
+            <button
+              onClick={() => {
+                document.cookie = "admin_key=; max-age=0; path=/";
+                document.cookie = "temporary_key_time=; max-age=0; path=/";
+                router.push("/admin/login");
+              }}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center justify-center"
+            >
+              <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+              Logout
+            </button>
+            <div className=" bg-gray-800 p-6 rounded-lg shadow-md">
+              <h2 className="text-2xl font-bold text-white mb-4">
+                Informasi Proyek
+              </h2>
+              <p className="text-white">
+                Proyek ini adalah platform manajemen komik yang memungkinkan
+                admin untuk mengelola data komik dan bab. Kunjungi{" "}
+                <a
+                  href="https://github.com/username/repo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:underline"
+                >
+                  GitHub Project
+                </a>{" "}
+                untuk informasi lebih lanjut.
+              </p>
+            </div>
+            {latestKomik && (
+            <div className="bg-gray-700 p-4 rounded-lg mt-4">
+              <h3 className="text-xl font-bold text-white">Komik Terbaru</h3>
+              <p className="text-white">Judul: {latestKomik.title}</p>
+              <p className="text-white">Deskripsi: {latestKomik.description}</p>
+            </div>
+          )}
+          </div>
+        </div>
+        <div className="bg-gray-800 p-6 rounded-lg shadow-md col-span-2">
+          <h2 className="text-2xl font-bold text-white mb-4">Statistik</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <h3 className="text-xl font-bold text-white">Total Komik</h3>
+              <p className="text-white text-3xl">{komikList.length}</p>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <h3 className="text-xl font-bold text-white">Total Chapter</h3>
+              <p className="text-white text-3xl">{totalChapters}</p>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <h3 className="text-xl font-bold text-white">Komik Tamat</h3>
+              <p className="text-white text-3xl">{totalCompleted}</p>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <h3 className="text-xl font-bold text-white">Komik Berlanjut</h3>
+              <p className="text-white text-3xl">{totalOngoing}</p>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <h3 className="text-xl font-bold text-white">Komik Hiatus</h3>
+              <p className="text-white text-3xl">{totalHiatus}</p>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <h3 className="text-xl font-bold text-white">Komik Drop</h3>
+              <p className="text-white text-3xl">{totalDropped}</p>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <h3 className="text-xl font-bold text-white">Total Manga</h3>
+              <p className="text-white text-3xl">{totalManga}</p>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <h3 className="text-xl font-bold text-white">Total Manhua</h3>
+              <p className="text-white text-3xl">{totalManhua}</p>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <h3 className="text-xl font-bold text-white">Total Manhwa</h3>
+              <p className="text-white text-3xl">{totalManhwa}</p>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <h3 className="text-xl font-bold text-white">Total Webcomic</h3>
+              <p className="text-white text-3xl">{totalWebcomic}</p>
+            </div>
+          </div>
+          
         </div>
       </div>
-      {(selectedKomik || showAddForm) && (
-        <div
-          className={`fixed right-0 top-0 h-full w-1/3 bg-gray-900 p-6 shadow-2xl transform transition-transform duration-500 ease-in-out
-      ${formAnimate ? "form-animate-enter" : "form-animate"} overflow-y-scroll`}
-        >
-          <form
-            onSubmit={selectedKomik ? handleUpdate : handleAdd}
-            className="mt-8 text-black"
-          >
-            <h2 className="text-2xl font-bold mb-6 text-white">
-              {selectedKomik ? "Edit Komik" : "Tambah Komik"}
-            </h2>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Judul"
-              className="border border-gray-700 p-3 w-full mb-5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Deskripsi"
-              className="border border-gray-700 p-3 w-full mb-5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            <input
-              type="text"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              placeholder="URL Gambar"
-              className="
-             border border-gray-700 p-3 w-full mb-5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            <input
-              type="text"
-              value={genre}
-              onChange={(e) => setGenre(e.target.value)}
-              placeholder="Genre"
-              required
-              className="border border-gray-700 p-3 w-full mb-5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <textarea
-              value={synopsis}
-              onChange={(e) => setSynopsis(e.target.value)}
-              placeholder="Synopsis"
-              required
-              className="border border-gray-700 p-3 w-full mb-5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <input
-              type="text"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              placeholder="Status"
-              required
-              className="border border-gray-700 p-3 w-full mb-5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <input
-              type="text"
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              placeholder="Type"
-              required
-              className="border border-gray-700 p-3 w-full mb-5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <input
-              type="text"
-              value={released}
-              onChange={(e) => setReleased(e.target.value)}
-              placeholder="Released"
-              required
-              className="border border-gray-700 p-3 w-full mb-5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <input
-              type="text"
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              placeholder="Author"
-              required
-              className="border border-gray-700 p-3 w-full mb-5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <input
-              type="date"
-              value={postedOn}
-              onChange={(e) => setPostedOn(e.target.value)}
-              placeholder="Posted On"
-              required
-              className="border border-gray-700 p-3 w-full mb-5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            <input
-              type="date"
-              value={updatedOn}
-              onChange={(e) => setUpdatedOn(e.target.value)}
-              placeholder="Updated On"
-              required
-              className="border border-gray-700 p-3 w-full mb-5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            <div className="flex gap-4">
-              <button
-                type="submit"
-                className={`${
-                  selectedKomik ? "bg-green-600" : "bg-blue-600"
-                } text-white py-3 px-5 rounded-lg hover:bg-opacity-90 transition`}
-              >
-                {selectedKomik ? "Update Komik" : "Tambah Komik"}
-              </button>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleHideForm();
-                }}
-                className="bg-red-600 text-white py-3 px-5 rounded-lg hover:bg-opacity-90 transition"
-              >
-                Tutup Form
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
     </div>
   );
-};
-
-export default AdminPage;
+}
