@@ -19,7 +19,6 @@ export default function Home() {
           throw new Error(`Gagal mengambil data: ${response.status}`);
         }
         const data = await response.json();
-        console.log("Data komik:", data);
         setKomikList(data);
 
         // Mengacak dan memilih rekomendasi komik

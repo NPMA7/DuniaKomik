@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,6 +10,7 @@ import {
   faArrowRight,
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
+import Loading from "@/components/loading"; // Import komponen Loading
 
 const ChapterPage = () => {
   const { slug, chapterNumber } = useParams();
@@ -16,6 +18,8 @@ const ChapterPage = () => {
   const [comic, setComic] = useState(null);
   const [currentChapter, setCurrentChapter] = useState(null);
   const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true); // State untuk animasi loading
+  const [error, setError] = useState(false); // State untuk error
 
   useEffect(() => {
     const fetchComic = async () => {
@@ -31,6 +35,7 @@ const ChapterPage = () => {
       } else {
         console.error("Komik tidak ditemukan dengan slug:", slug);
       }
+      setLoading(false); // Set loading ke false setelah data diambil
     };
 
     fetchComic();
@@ -40,26 +45,41 @@ const ChapterPage = () => {
     const fetchImages = async () => {
       if (currentChapter) {
         try {
-          console.log("currentChapter.file:", currentChapter.file);
-          const response = await fetch(
-            `/api/v1/komik/images?folder=${currentChapter.file}`
-          );
+          const response = await fetch(`/api/v1/komik/images?slug=${slug}&chapterNumber=${chapterNumber}`);
           if (!response.ok) {
             throw new Error(`Gagal memuat gambar: ${response.status}`);
           }
           const data = await response.json();
-          console.log("Gambar yang diambil:", data.images);
-          console.log("Response dari API:", data);
-          setImages(data.images || []);
+          const images = data
+            .map((file) => ({
+              url: `https://drive.google.com/uc?export=view&id=${file.id}`,
+              id: file.id,
+              name: file.name,
+            }))
+            .sort((a, b) => {
+              const nameA = a.name.split('.')[0];
+              const nameB = b.name.split('.')[0];
+              return parseInt(nameA) - parseInt(nameB);
+            });
+          setImages(images || []);
         } catch (error) {
           console.error("Error fetching images:", error);
           setImages([]);
+          setError(true); // Set error ke true jika gagal memuat gambar
         }
       }
     };
 
     fetchImages();
-  }, [currentChapter]);
+  }, [currentChapter, slug, chapterNumber]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loading /> {/* Tampilkan animasi loading */}
+      </div>
+    );
+  }
 
   if (!comic || !currentChapter) {
     return (
@@ -168,21 +188,23 @@ const ChapterPage = () => {
         </div>
       </div>
       <div className="image-gallery flex flex-col justify-center items-center">
-        {Array.isArray(images) && images.length > 0 ? (
+        {error ? (
+          <p className="flex items-center justify-center text-center min-h-20 text-red-500">Chapter rusak, tidak dapat menampilkan gambar.</p>
+        ) : Array.isArray(images) && images.length > 0 ? (
           images.map((image, index) => (
             <div key={index} className="flex justify-center items-center w-3/5">
-              <img
+              <Image
                 key={index}
-                src={image}
-                alt={`Chapter ${currentChapter.chapter_number} - Image ${
-                  index + 1
-                }`}
+                src={image.url}
+                alt={image.name}
                 className="mb-4 rounded-lg shadow-lg"
+                width={500}
+                height={500}
               />
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500">Loading...</p>
+          <Loading />
         )}
       </div>
       <div className="flex justify-center gap-4 mt-8">
