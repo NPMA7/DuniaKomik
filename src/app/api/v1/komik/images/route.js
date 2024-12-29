@@ -1,66 +1,61 @@
-import { google } from "googleapis";
-import path from "path";
-import { NextResponse } from 'next/server';
+//src/app/api/v1/komik/images/route.js
 import fs from 'fs';
+import path from 'path';
+import { NextResponse } from 'next/server';
+import { google } from 'googleapis';
 
-const filePath = path.join(process.cwd(), 'src/app/api/v1/komik.json');
+const credentialsPath = path.join(process.cwd(), 'src/credentials.json');
+const readLocalFolder = (folder) => {
+  const folderPath = path.join(process.cwd(), 'public', folder);
 
-const readKomikData = () => {
-  const jsonData = fs.readFileSync(filePath);
-  return JSON.parse(jsonData);
+  try {
+    const files = fs.readdirSync(folderPath);
+    return files
+      .filter((file) => /\.(jpg|jpeg|png|gif)$/.test(file))
+      .map((file) => `/${folder}/${file}`);
+  } catch (error) {
+    throw new Error("Folder tidak ditemukan.");
+  }
+};
+
+
+const readGoogleDriveFolder = async (folderId) => {
+  const auth = new google.auth.GoogleAuth({
+    keyFile: credentialsPath,
+    scopes: ["https://www.googleapis.com/auth/drive.readonly"],
+  });
+
+  const drive = google.drive({ version: 'v3', auth });
+
+  const response = await drive.files.list({
+    q: `'${folderId}' in parents`,
+    fields: 'files(id, name, mimeType)',
+  });
+
+  // console.log("Google Drive API response:", response.data.files);
+
+  return response.data.files
+    .filter((file) => file.mimeType.startsWith('image/'))
+    .map((file) => ({
+      id: file.id,
+      name: file.name,
+      url: `https://drive.google.com/uc?export=view&id=${file.id}`
+    }));
 };
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
-  const slug = searchParams.get('slug');
-  const chapterNumber = searchParams.get('chapterNumber');
+  const folder = searchParams.get('folder');
+  const isGoogleDrive = searchParams.get('googleDrive') === 'true';
 
   try {
-    const komikList = readKomikData();
-    const foundKomik = komikList.find((k) => k.slug === slug);
-    
-    if (!foundKomik) {
-      return NextResponse.json({ error: "Komik tidak ditemukan" }, { status: 404 });
-    }
+    const images = isGoogleDrive
+      ? await readGoogleDriveFolder(folder)
+      : readLocalFolder(folder);
 
-    const chapter = foundKomik.chapters.find(ch => ch.chapter_number === parseInt(chapterNumber));
-    
-    if (!chapter) {
-      return NextResponse.json({ error: "Chapter tidak ditemukan" }, { status: 404 });
-    }
-
-    const folderId = chapter.file.split('/').pop(); // Ambil folderId dari URL
-
-    console.log("Path credentials.json:", path.join(process.cwd(), "src/credentials.json"));
-
-    const keyFilePath = path.join(process.cwd(), "src/credentials.json");
-    const auth = new google.auth.GoogleAuth({
-      keyFile: keyFilePath,
-      scopes: ["https://www.googleapis.com/auth/drive.readonly"],
-    });
-
-    console.log("Authenticating...");
-    const drive = google.drive({ version: "v3", auth });
-
-    console.log("Fetching files from folder:", folderId);
-
-    const response = await drive.files.list({
-      q: `'${folderId}' in parents`,
-      fields: "files(id, name, mimeType)",
-    });
-
-    const files = response.data.files.filter((file) =>
-      file.mimeType.startsWith("image/")
-    );
-
-    return new Response(JSON.stringify(files), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json({ images });
   } catch (error) {
-    console.error("Error in API route:", error.message, error.stack);
-    return new Response(JSON.stringify({ error: "Failed to fetch images" }), {
-      status: 500,
-    });
+    console.error("Error fetching images:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

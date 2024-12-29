@@ -1,16 +1,10 @@
 "use client";
-
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
+import Loading from "@/components/Loading";
+import { faArrowLeft, faArrowRight, faBookOpen, faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faBookOpen,
-  faArrowRight,
-  faExclamationTriangle,
-} from "@fortawesome/free-solid-svg-icons";
-import Loading from "@/components/loading"; // Import komponen Loading
 
 const ChapterPage = () => {
   const { slug, chapterNumber } = useParams();
@@ -18,11 +12,12 @@ const ChapterPage = () => {
   const [comic, setComic] = useState(null);
   const [currentChapter, setCurrentChapter] = useState(null);
   const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(true); // State untuk animasi loading
-  const [error, setError] = useState(false); // State untuk error
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchComic = async () => {
+      setLoading(true); // Set loading ke true saat mulai mengambil data
       const response = await fetch("/api/v1/komik");
       const data = await response.json();
       const foundComic = data.find((k) => k.slug === slug);
@@ -33,7 +28,7 @@ const ChapterPage = () => {
         );
         setCurrentChapter(chapter);
       } else {
-        console.error("Komik tidak ditemukan dengan slug:", slug);
+        setError(true);
       }
       setLoading(false); // Set loading ke false setelah data diambil
     };
@@ -43,35 +38,34 @@ const ChapterPage = () => {
 
   useEffect(() => {
     const fetchImages = async () => {
+      setLoading(true); // Set loading ke true saat mulai mengambil gambar
       if (currentChapter) {
+        const isGoogleDrive = currentChapter.file.startsWith("https://");
+        const folder = isGoogleDrive
+          ? currentChapter.file.split("/").pop()
+          : currentChapter.file;
+
         try {
-          const response = await fetch(`/api/v1/komik/images?slug=${slug}&chapterNumber=${chapterNumber}`);
-          if (!response.ok) {
-            throw new Error(`Gagal memuat gambar: ${response.status}`);
-          }
+          const response = await fetch(
+            `/api/v1/komik/images?folder=${folder}&googleDrive=${isGoogleDrive}`
+          );
           const data = await response.json();
-          const images = data
-            .map((file) => ({
-              url: `https://drive.google.com/uc?export=view&id=${file.id}`,
-              id: file.id,
-              name: file.name,
-            }))
-            .sort((a, b) => {
-              const nameA = a.name.split('.')[0];
-              const nameB = b.name.split('.')[0];
-              return parseInt(nameA) - parseInt(nameB);
-            });
-          setImages(images || []);
+          const sortedImages = data.images.sort((a, b) => {
+            const nameA = a.name ? a.name.split(".")[0] : "";
+            const nameB = b.name ? b.name.split(".")[0] : "";
+            return parseInt(nameA) - parseInt(nameB);
+          });
+          setImages(sortedImages || []);
         } catch (error) {
           console.error("Error fetching images:", error);
-          setImages([]);
-          setError(true); // Set error ke true jika gagal memuat gambar
+          setError(true);
         }
       }
+      setLoading(false); // Set loading ke false setelah gambar diambil
     };
 
     fetchImages();
-  }, [currentChapter, slug, chapterNumber]);
+  }, [currentChapter]);
 
   if (loading) {
     return (
@@ -187,17 +181,18 @@ const ChapterPage = () => {
           </button>
         </div>
       </div>
+
       <div className="image-gallery flex flex-col justify-center items-center">
         {error ? (
-          <p className="flex items-center justify-center text-center min-h-20 text-red-500">Chapter rusak, tidak dapat menampilkan gambar.</p>
+          <p className="flex items-center justify-center text-center min-h-20 text-red-500">
+            Chapter rusak, tidak dapat menampilkan gambar.
+          </p>
         ) : Array.isArray(images) && images.length > 0 ? (
           images.map((image, index) => (
-            <div key={index} className="flex justify-center items-center w-3/5">
+            <div key={index}>
               <Image
-                key={index}
-                src={image.url}
-                alt={image.name}
-                className="mb-4 rounded-lg shadow-lg"
+                src={image.id ? image.url : image}
+                alt={`Halaman ${index + 1}`}
                 width={500}
                 height={500}
               />
@@ -207,6 +202,7 @@ const ChapterPage = () => {
           <Loading />
         )}
       </div>
+
       <div className="flex justify-center gap-4 mt-8">
         <div className="flex flex-col">
           <select
