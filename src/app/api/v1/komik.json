@@ -1,17 +1,10 @@
-
 [
   {
-    "id": 1,
     "title": "Mercenary Enrollment",
-    "slug": "mercenary-enrollment",
     "description": "입학용병",
     "image": "https://d40b35e2.delivery.rocketcdn.me/wp-content/uploads/2021/03/23-587365-WMDAnwJR.jpg",
     "genre": [
-      "Action",
-      "Drama",
-      "Romance",
-      "School Life",
-      "Sci-fi"
+      "Action"
     ],
     "synopsis": "Yu Ijin adalah satu-satunya yang selamat dari kecelakaan pesawat saat dia masih kecil. Setelah menjadi tentara bayaran untuk bertahan hidup selama 10 tahun, ia kembali ke keluarganya di kampung halamannya.",
     "status": "Ongoing",
@@ -20,131 +13,45 @@
     "author": "YC",
     "posted_on": "2021-03-07",
     "updated_on": "2024-12-28",
+    "slug": "mercenary-enrollment",
     "chapters": [
-      {
-        "chapter_number": 1,
-        "title": "Ch.1",
-        "posted_on": "2024-12-29T02:04",
-        "file": "https://drive.google.com/drive/folders/1HL-Jwj65lgz-5pOkdzRLTCaHsOcMWGGM"
-      }
-    ]
-  },
-  {
-    "id": 2,
-    "title": "Github Komik",
-    "slug": "github-komik",
-    "description": "test path online url",
-    "image": "/images/komik3.png",
-    "genre": [
-      "Technology",
-      "Adventure"
-    ],
-    "synopsis": "This is a test synopsis for Github.",
-    "status": "Completed",
-    "type": "Webcomic",
-    "released": "2020",
-    "author": "Author Name",
-    "posted_on": "2020-01-01",
-    "updated_on": "2020-06-01",
-    "chapters": [
-      {
-        "chapter_number": 1,
-        "title": "Ch.1",
-        "posted_on": "2024-12-28T16:36",
-        "file": "https://drive.google.com/drive/folders/1HL-Jwj65lgz-5pOkdzRLTCaHsOcMWGGM"
-      },
-      {
-        "chapter_number": 2,
-        "title": "Ch.2",
-        "posted_on": "2024-12-28T16:37",
-        "file": "files/solo-farming-in-the-tower-chapter-90"
-      },
-      {
-        "chapter_number": 3,
-        "title": "Ch.3",
-        "posted_on": "2024-12-28T16:37",
-        "file": "files/solo-farming-in-the-tower-chapter-90"
-      }
-    ]
-  },
-  {
-    "id": 3,
-    "title": "Reincarnation of the Veteran Soldier",
-    "slug": "reincarnation-of-the-veteran-soldier",
-    "description": "dfa",
-    "image": "/images/komik3.png",
-    "genre": [
-      "Action"
-    ],
-    "synopsis": "sad",
-    "status": "Ongoing",
-    "type": "Manhwa",
-    "released": "2024",
-    "author": "sad",
-    "posted_on": "2024-12-28",
-    "updated_on": "2024-12-28",
-    "chapters": [
-      {
-        "chapter_number": 1,
-        "title": "Ch.1",
-        "posted_on": "2024-12-26T20:27",
-        "file": "files/solo-farming-in-the-tower-chapter-90"
-      },
-      {
-        "chapter_number": 2,
-        "title": "Ch.2",
-        "posted_on": "2024-12-26T20:27",
-        "file": "files/solo-farming-in-the-tower-chapter-90"
-      },
-      {
-        "chapter_number": 3,
-        "title": "Ch.3",
-        "posted_on": "2024-12-27T20:27",
-        "file": "files/solo-farming-in-the-tower-chapter-90"
-      },
       {
         "chapter_number": 4,
         "title": "Ch.4",
-        "posted_on": "2024-12-28T20:27",
-        "file": "files/solo-farming-in-the-tower-chapter-90"
+        "posted_on": "2024-12-29T18:56",
+        "file": "files/mercenary-enrollment/mercenary-enrollment-chapter-0"
       },
       {
-        "chapter_number": 5,
-        "title": "Ch.5",
-        "posted_on": "2024-12-28T20:34",
-        "file": "files/solo-farming-in-the-tower-chapter-90"
-      }
-    ]
-  },
-  {
-    "title": "Solo Necttromarcer",
-    "description": "anak yt",
-    "image": "/images/komik2.png",
-    "genre": [
-      "Action"
-    ],
-    "synopsis": "fa",
-    "status": "Hiatus",
-    "type": "Manhwa",
-    "released": "2332",
-    "author": "123",
-    "posted_on": "2024-12-28",
-    "updated_on": "2024-12-28",
-    "slug": "solo-necttromarcer",
-    "id": 4,
-    "chapters": [
+        "chapter_number": 3,
+        "title": "Ch.3",
+        "posted_on": "2024-12-29T18:52",
+        "file": "files/mercenary-enrollment/mercenary-enrollment-chapter-0"
+      },
+      {
+        "chapter_number": 2,
+        "title": "Ch.2",
+        "posted_on": "2024-12-29T13:21",
+        "file": "files/mercenary-enrollment/mercenary-enrollment-chapter-0"
+      },
       {
         "chapter_number": 1,
         "title": "Ch.1",
-        "posted_on": "2024-12-28T18:13",
+        "posted_on": "2024-12-29T13:21",
         "file": "files/solo-farming-in-the-tower-chapter-90"
+      },
+      {
+        "chapter_number": 0,
+        "title": "Ch.0",
+        "posted_on": "2024-12-29T13:21",
+        "file": "https://drive.google.com/drive/folders/14tL9f4EStitmyIYtRz7uqVydX3NUWo1e"
       }
-    ]
+    ],
+    "id": 1
   },
   {
     "title": "Magic Emperor",
     "description": "Housekeeper is the Magic Emperor, 魔皇大管家",
-    "image": "/images/komik1.png",
+    "image": "https://d40b35e2.delivery.rocketcdn.me/wp-content/uploads/2021/05/manhua-821002-yAQZQNai.gif",
     "genre": [
       "",
       "Action",
@@ -159,48 +66,16 @@
     "released": "2019",
     "author": "Wuer Manhua Ye Xiao",
     "posted_on": "2021-03-03",
-    "updated_on": "2024-12-28",
+    "updated_on": "2024-12-29",
     "slug": "magic-emperor",
-    "id": 5,
     "chapters": [
       {
         "chapter_number": 1,
         "title": "Ch.1",
-        "posted_on": "2024-12-28T18:51",
-        "file": "https://drive.google.com/drive/folders/1rA1_-0n-_nos2O154iyAfAZnNYbZ0oxu"
+        "posted_on": "2024-12-29T20:58",
+        "file": "files/magic-emperor/magic-emperor-chapter-1"
       }
-    ]
-  },
-  {
-    "title": "Asumasou",
-    "description": "fkwke",
-    "image": "/images/komik1.png",
-    "genre": [
-      "",
-      "Adult"
     ],
-    "synopsis": "asdf",
-    "status": "Ongoing",
-    "type": "Manga",
-    "released": "2002",
-    "author": "rs",
-    "posted_on": "2024-12-28",
-    "updated_on": "2024-12-28",
-    "slug": "asumasou",
-    "id": 6,
-    "chapters": [
-      {
-        "chapter_number": 1,
-        "title": "Ch.1",
-        "posted_on": "2024-12-28T23:00",
-        "file": "files/solo-farming-in-the-tower-chapter-90"
-      },
-      {
-        "chapter_number": 2,
-        "title": "Ch.2",
-        "posted_on": "2024-12-28T23:02",
-        "file": "files/solo-farming-in-the-tower-chapter-90"
-      }
-    ]
+    "id": 2
   }
 ]

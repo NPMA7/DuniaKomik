@@ -69,7 +69,8 @@ const AdminPage = () => {
       author,
       posted_on: postedOn,
       updated_on: updatedOn,
-      slug: slug || title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '')
+      slug: slug || title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
+      chapters: selectedKomik.chapters
     };
 
     const response = await fetch("/api/v1/komik", {
@@ -121,7 +122,8 @@ const AdminPage = () => {
       author,
       posted_on: postedOn,
       updated_on: updatedOn,
-      slug: title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '')
+      slug: title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
+      chapters: []
     };
 
     const response = await fetch("/api/v1/komik", {

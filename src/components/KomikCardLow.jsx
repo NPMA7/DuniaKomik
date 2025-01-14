@@ -33,10 +33,10 @@ const KomikCardLow = ({ title, image, chapters = [], id }) => {
       </div>
 
       {/* Konten Komik */}
-      <div className="flex flex-col text-gray-200">
-        <h3 className="font-bold text-base h-12 line-clamp-2">{title}</h3>
-        <ul className="text-sm ">
-          {sortedChapters.slice(0, 2).map((chapter, index) => (
+      <div className="flex flex-col text-gray-200 p-2">
+        <h3 className="font-bold text-base line-clamp-1">{title}</h3>
+        <ul className="text-sm">
+          {sortedChapters.slice(0, 1).map((chapter, index) => (
             <li 
               key={index} 
               className="bg-gray-700 p-2 rounded-lg mb-2 flex justify-between cursor-pointer" 
@@ -61,9 +61,9 @@ const getTimeAgo = (dateString) => {
   const diffInWeeks = Math.floor(diffInDays / 7);
 
   if (diffInDays < 7) {
-    return `${diffInDays} days`;
+    return `${diffInDays} hari`;
   } else {
-    return `${diffInWeeks} week`;
+    return `${diffInWeeks} minggu`;
   }
 };
 

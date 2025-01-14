@@ -2,9 +2,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import Loading from "@/components/Loading";
 import { faArrowLeft, faArrowRight, faBookOpen, faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Loading from "@/components/loading";
 
 const ChapterPage = () => {
   const { slug, chapterNumber } = useParams();
@@ -12,12 +12,10 @@ const ChapterPage = () => {
   const [comic, setComic] = useState(null);
   const [currentChapter, setCurrentChapter] = useState(null);
   const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchComic = async () => {
-      setLoading(true); // Set loading ke true saat mulai mengambil data
       const response = await fetch("/api/v1/komik");
       const data = await response.json();
       const foundComic = data.find((k) => k.slug === slug);
@@ -26,11 +24,14 @@ const ChapterPage = () => {
         const chapter = foundComic.chapters.find(
           (ch) => ch.chapter_number === parseInt(chapterNumber)
         );
-        setCurrentChapter(chapter);
+        if (chapter) {
+          setCurrentChapter(chapter);
+        } else {
+          setError(true);
+        }
       } else {
         setError(true);
       }
-      setLoading(false); // Set loading ke false setelah data diambil
     };
 
     fetchComic();
@@ -38,7 +39,6 @@ const ChapterPage = () => {
 
   useEffect(() => {
     const fetchImages = async () => {
-      setLoading(true); // Set loading ke true saat mulai mengambil gambar
       if (currentChapter) {
         const isGoogleDrive = currentChapter.file.startsWith("https://");
         const folder = isGoogleDrive
@@ -50,60 +50,56 @@ const ChapterPage = () => {
             `/api/v1/komik/images?folder=${folder}&googleDrive=${isGoogleDrive}`
           );
           const data = await response.json();
+          
+          // Sort images by extracting the number from the filename
           const sortedImages = data.images.sort((a, b) => {
-            const nameA = a.name ? a.name.split(".")[0] : "";
-            const nameB = b.name ? b.name.split(".")[0] : "";
-            return parseInt(nameA) - parseInt(nameB);
+            const fileNameA = a.name || a;
+            const fileNameB = b.name || b;
+          
+            // Menggunakan localeCompare dengan opsi numerik
+            return fileNameA.localeCompare(fileNameB, undefined, { numeric: true });
           });
+          
           setImages(sortedImages || []);
         } catch (error) {
           console.error("Error fetching images:", error);
           setError(true);
         }
       }
-      setLoading(false); // Set loading ke false setelah gambar diambil
     };
 
     fetchImages();
   }, [currentChapter]);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Loading /> {/* Tampilkan animasi loading */}
-      </div>
-    );
-  }
-
   if (!comic || !currentChapter) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        Loading...
-      </div>
-    );
+    return <Loading />;
   }
 
   const handleNavigation = (chapterOffset) => {
     const newChapterNumber = parseInt(chapterNumber) + chapterOffset;
-    const newChapter = comic.chapters.find(
-      (ch) => ch.chapter_number === newChapterNumber
-    );
-    if (newChapter) {
-      router.push(`/${slug}/chapter/${newChapterNumber}`);
+    if (newChapterNumber >= 0 && newChapterNumber <= comic.chapters.length) {
+      const newChapter = comic.chapters.find(
+        (ch) => ch.chapter_number === newChapterNumber
+      );
+      if (newChapter) {
+        router.push(`/${slug}/chapter/${newChapterNumber}`);
+      }
     }
   };
 
+  const isPrevDisabled = !comic.chapters.some(ch => ch.chapter_number === 0) && parseInt(chapterNumber) <= 0;
+
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-4xl font-extrabold mb-6 text-center text-gray-400">
+    <div className="bg-gray-900 container mx-auto p-4 sm:p-6">
+      <h1 className="text-3xl sm:text-4xl font-extrabold mb-4 text-center text-gray-400">
         {comic.title} {currentChapter.title.replace("Ch.", " Chapter ")} Bahasa
         Indonesia
       </h1>
-      <p className="text-center text-gray-500 mb-4">
+      <p className="text-center text-gray-500 mb-2">
         Tanggal Terbit:{" "}
         {new Date(currentChapter.posted_on).toLocaleDateString()}
       </p>
-      <p className="text-center text-gray-500 ">
+      <p className="text-center text-gray-500 mb-4">
         Baca <span className="font-bold text-lg">{comic.title}</span>{" "}
         <span className="font-bold text-lg">
           {currentChapter.title.replace("Ch.", "Chapter ")}
@@ -114,13 +110,13 @@ const ChapterPage = () => {
         Indonesia selalu update di{" "}
         <span className="font-bold text-lg">Dunia Komik</span>.
       </p>
-      <p className="text-center text-gray-500 mb-8">
+      <p className="text-center text-gray-500 mb-6">
         Jangan lupa membaca update komik lainnya ya 🎉🎉🎉🎉.
       </p>
-      <div className="flex justify-between items-center gap-4 m-8">
-        <div className="flex flex-col">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 m-4">
+        <div className="flex flex-col w-full">
           <select
-            className="bg-gray-600 border-gray-600 text-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pr-[87px] p-2"
+            className="bg-gray-600 border-gray-600 text-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
             value={chapterNumber}
             onChange={(e) => router.push(`/${slug}/chapter/${e.target.value}`)}
           >
@@ -134,10 +130,10 @@ const ChapterPage = () => {
             ))}
           </select>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center w-full">
           <a
             href="#"
-            className="text-base bg-red-600 text-white rounded-lg p-x-5 p-2"
+            className="text-base bg-red-600 text-white rounded-lg p-2 w-full text-center"
           >
             <FontAwesomeIcon
               icon={faExclamationTriangle}
@@ -150,36 +146,31 @@ const ChapterPage = () => {
             />
           </a>
         </div>
-        <div className="flex flex-row gap-4">
-          <button
-            onClick={() =>
-              parseInt(chapterNumber) > 1 ? handleNavigation(-1) : null
-            }
-            className={`bg-blue-500 text-white px-4 py-2 rounded ${
-              parseInt(chapterNumber) <= 1
-                ? "opacity-50 cursor-not-allowed"
-                : ""
-            }`}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} />
-            <span className="ml-2">Prev</span>
-          </button>
-          <button
-            onClick={() =>
-              parseInt(chapterNumber) < comic.chapters.length
-                ? handleNavigation(1)
-                : null
-            }
-            className={`bg-blue-500 text-white px-4 py-2 rounded ${
-              parseInt(chapterNumber) >= comic.chapters.length
-                ? "opacity-50 cursor-not-allowed"
-                : ""
-            }`}
-          >
-            <span className="mr-2">Next</span>
-            <FontAwesomeIcon icon={faArrowRight} />
-          </button>
-        </div>
+      </div>
+      <div className="flex flex-row gap-4 justify-center mb-4">
+        <button
+          onClick={() => handleNavigation(-1)}
+          className={`bg-blue-500 text-white px-4 py-2 rounded ${isPrevDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+          disabled={isPrevDisabled}
+        >
+          <FontAwesomeIcon icon={faArrowLeft} />
+          <span className="ml-2">Prev</span>
+        </button>
+        <button
+          onClick={() =>
+            parseInt(chapterNumber) < comic.chapters.length - 1
+              ? handleNavigation(1)
+              : null
+          }
+          className={`bg-blue-500 text-white px-4 py-2 rounded ${
+            parseInt(chapterNumber) >= comic.chapters.length - 1
+              ? "opacity-50 cursor-not-allowed"
+              : ""
+          }`}
+        >
+          <span className="mr-2">Next</span>
+          <FontAwesomeIcon icon={faArrowRight} />
+        </button>
       </div>
 
       <div className="image-gallery flex flex-col justify-center items-center">
@@ -189,12 +180,13 @@ const ChapterPage = () => {
           </p>
         ) : Array.isArray(images) && images.length > 0 ? (
           images.map((image, index) => (
-            <div key={index}>
+            <div key={index} className="mb-4">
               <Image
                 src={image.id ? image.url : image}
                 alt={`Halaman ${index + 1}`}
                 width={500}
                 height={500}
+                priority={true}
               />
             </div>
           ))
@@ -206,7 +198,7 @@ const ChapterPage = () => {
       <div className="flex justify-center gap-4 mt-8">
         <div className="flex flex-col">
           <select
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pr-10 p-2"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
             value={chapterNumber}
             onChange={(e) => router.push(`/${slug}/chapter/${e.target.value}`)}
           >
@@ -227,23 +219,20 @@ const ChapterPage = () => {
           <FontAwesomeIcon icon={faBookOpen} />
         </button>
         <button
-          onClick={() =>
-            parseInt(chapterNumber) > 1 ? handleNavigation(-1) : null
-          }
-          className={`bg-blue-500 text-white px-4 py-2 rounded ${
-            parseInt(chapterNumber) <= 1 ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          onClick={() => handleNavigation(-1)}
+          className={`bg-blue-500 text-white px-4 py-2 rounded ${isPrevDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+          disabled={isPrevDisabled}
         >
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
         <button
           onClick={() =>
-            parseInt(chapterNumber) < comic.chapters.length
+            parseInt(chapterNumber) < comic.chapters.length - 1
               ? handleNavigation(1)
               : null
           }
           className={`bg-blue-500 text-white px-4 py-2 rounded ${
-            parseInt(chapterNumber) >= comic.chapters.length
+            parseInt(chapterNumber) >= comic.chapters.length - 1
               ? "opacity-50 cursor-not-allowed"
               : ""
           }`}

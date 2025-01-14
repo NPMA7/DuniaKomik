@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import KomikCardBig from "@/components/KomikCardBig";
 import Loading from "@/components/loading";
+import KomikCardList from "@/components/KomikCardList";
 
 const KomikListPage = () => {
   const [komikList, setKomikList] = useState([]);
@@ -58,36 +58,51 @@ const KomikListPage = () => {
 
   return (
     <div className="bg-[#111827] text-white min-h-screen py-10">
-      <div className="container mx-auto h-full p-12 my-10">
+      <div className="w-full h-full p-3 lg:p-10 my-10">
         <h1 className="text-3xl font-bold mb-4">Daftar Komik</h1>
-        <div className="flex justify-end mb-4">
-          <select
-            className="bg-gray-700 text-white px-4 py-2 rounded mr-2"
-            onChange={(e) => handleFilterChange("genre", e.target.value)}
-          >
-            <option value="">All Genres</option>
-            <option value="Action">Action</option>
-            <option value="Romance">Romance</option>
-            {/* Tambahkan opsi genre lainnya di sini */}
-          </select>
-          <select
-            className="bg-gray-700 text-white px-4 py-2 rounded mr-2"
-            onChange={(e) => handleFilterChange("type", e.target.value)}
-          >
-            <option value="">All Types</option>
-            <option value="Manga">Manga</option>
-            <option value="Manhwa">Manhwa</option>
-            {/* Tambahkan opsi type lainnya di sini */}
-          </select>
-          <select
-            className="bg-gray-700 text-white px-4 py-2 rounded mr-2"
-            onChange={(e) => handleFilterChange("status", e.target.value)}
-          >
-            <option value="">All Status</option>
-            <option value="Ongoing">Ongoing</option>
-            <option value="Completed">Completed</option>
-            {/* Tambahkan opsi status lainnya di sini */}
-          </select>
+        <div className="flex flex-col sm:flex-row justify-between mb-4">
+          <div className="flex flex-wrap">
+            <select
+              className="bg-gray-700 text-white px-4 py-2 rounded mr-2 mb-2 sm:mb-0"
+              onChange={(e) => handleFilterChange("genre", e.target.value)}
+            >
+              <option value="">All Genres</option>
+              {[
+                "Action", "Adaptation", "Adult", "Adventure", "Ascension", "Blood", "Comedy",
+                "Dark Fantasy", "Demon", "Drama", "Dungeons", "Ecchi", "Fantasy", "Game",
+                "Gender Bender", "Genius MC", "Harem", "Historical", "Horror", "Isekai",
+                "Josei", "Kombay", "Magic", "Manga", "Manhua", "Manhwa", "Manwha",
+                "Martial Arts", "Adult", "Mecha", "Monsters", "Monsters Reincarnation",
+                "Murim", "Mystery", "Necromancer", "Overpowered", "Psychological",
+                "Regression", "Reincarnation", "Returner", "Revenge", "Romance", "School Life",
+                "Sci-fi", "Seinen", "Shoujo", "Shoujo Ai", "Shounen", "Slice of Life", "Smut",
+                "Sports", "Super Power", "Supernatural", "System", "Thriller", "Time Loop",
+                "Time Travel", "Tragedy", "Vampire", "Vampires", "Video games", "Villainess",
+                "Virtual Reality", "Webtoon", "Yuri"
+              ].map((genre) => (
+                <option key={genre} value={genre}>
+                  {genre}
+                </option>
+              ))}
+            </select>
+            <select
+              className="bg-gray-700 text-white px-4 py-2 rounded mr-2 mb-2 sm:mb-0"
+              onChange={(e) => handleFilterChange("type", e.target.value)}
+            >
+              <option value="">All Types</option>
+              <option value="Manga">Manga</option>
+              <option value="Manhwa">Manhwa</option>
+              <option value="Manhua">Manhua</option>
+            </select>
+            <select
+              className="bg-gray-700 text-white px-4 py-2 rounded mr-2 mb-2 sm:mb-0"
+              onChange={(e) => handleFilterChange("status", e.target.value)}
+            >
+              <option value="">All Status</option>
+              <option value="Ongoing">Ongoing</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded"
             onClick={handleSort}
@@ -95,21 +110,22 @@ const KomikListPage = () => {
             Sort {sortOrder === "asc" ? "Z-A" : "A-Z"}
           </button>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {filteredKomikList.length > 0 ? (
             filteredKomikList.map((komik) => (
-              <div className="w-full h-48" key={komik.id}>
-                <KomikCardBig
+              <div key={komik.id} className="flex flex-col items-center">
+                <KomikCardList    
                   title={komik.title}
                   image={komik.image}
-                  chapters={komik.chapters.slice(-1)} // Menampilkan hanya chapter terbaru
+                  chapters={komik.chapters}
                   slug={komik.slug}
-                  imageHeight={60}
+                  genre={komik.genre}
+                  status={komik.status}
                 />
               </div>
             ))
           ) : (
-            <p>Tidak ada komik yang ditemukan.</p>
+            <p>Data tidak muncul.</p>
           )}
         </div>
       </div>

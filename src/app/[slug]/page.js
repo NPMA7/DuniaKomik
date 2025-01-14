@@ -43,8 +43,7 @@ const ComicPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-6 flex flex-col gap-6">
-      
+    <div className="bg-gray-900 container mx-auto sm:p-6 flex flex-col gap-6">
       <ComicInformation 
         title={komik.title} 
         image={komik.image} 

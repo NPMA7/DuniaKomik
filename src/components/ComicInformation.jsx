@@ -38,7 +38,7 @@ const ComicInformation = ({
       
       <div className="flex my-6">
         {/* Image Section */}
-        <div className="flex-shrink-0 w-64 h-96">
+        <div className="flex-shrink-0 w-40 lg:w-64 h-96">
           <img src={image} alt={title} className="w-full h-full object-cover rounded-lg shadow-md" />
         </div>
 
@@ -59,8 +59,8 @@ const ComicInformation = ({
               <strong>Chapter Terakhir:</strong> {chapters.length > 0 ? chapters[0].title : "N/A"}
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-3 text-sm text-gray-300 border border-gray-700 rounded-lg">
-            <p className="col-span-2 border-b border-gray-700 p-2 h-32"><strong>Synopsis:</strong> {synopsis}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-300 border border-gray-700 rounded-lg">
+            <p className="col-span-1 sm:col-span-2 border-b border-gray-700 p-2 h-32 overflow-y-auto no-scrollbar"><strong>Synopsis:</strong> {synopsis}</p>
             <p className="border-b border-gray-700 pl-2 pb-2 truncate "><strong>Status:</strong> {status}</p>
             <p className="border-b border-gray-700 pl-2 pb-2 truncate"><strong>Type:</strong> {type}</p>
             <p className="border-b border-gray-700 pl-2 pb-2 truncate"><strong>Released:</strong> {released}</p>
@@ -75,8 +75,9 @@ const ComicInformation = ({
                 <button
                   key={index}
                   className="bg-blue-500 text-white px-3 py-1 rounded-full mr-2 mb-2 hover:bg-blue-700"
+                  onClick={() => router.push(`/genre/${g.charAt(0).toUpperCase() + g.slice(1).toLowerCase().replace(/\s+/g, '-')}`)} // Mengarahkan ke halaman genre yang sesuai
                 >
-                  {g}
+                  {g.charAt(0).toUpperCase() + g.slice(1).toLowerCase()}
                 </button>
               ))}
             </div>
